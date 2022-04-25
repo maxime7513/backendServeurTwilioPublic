@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({
 app.use(cors());
 
 // Define PORT
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Create rappelsms endpoint
 app.post('/rappelsms', async (req, res) => {
