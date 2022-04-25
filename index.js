@@ -18,7 +18,7 @@ app.use(cors());
 // Define PORT
 const port = 3000;
 
-
+app.get("/", (req, res) => res.send('helo max'))
 // Create rappelsms endpoint
 app.post('/rappelsms', async (req, res) => {
   const { crenauDate, crenauHeureDebut,crenauHeureFin, phone, nom, societe, urlMission } = req.body;
