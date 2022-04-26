@@ -7,7 +7,7 @@ const client = require('twilio')(accountSid, authToken);
 async function sendScheduledSms(date, phone, message) {
     const sms = await client.messages.create({
       body: message,
-      messagingServiceSid: 'MGb01c041156f36c44e6c4281c2db58a4d',      
+      messagingServiceSid: 'MG7647de62283c642f5ec58b3a95fdd080',      
       to: phone,
       scheduleType: 'fixed',
       sendAt: date
