@@ -17,8 +17,9 @@ app.use(cors());
 
 // Define PORT
 const port = process.env.PORT || 3000;
+const keyword = process.env.KEYWORD;
 
-app.get('/', (req,res) => res.send('express server run'));
+app.get('/', (req,res) => res.send('express server run on '+ keyword));
 
 // Create rappelsms endpoint
 app.post('/rappelsms', async (req, res) => {
