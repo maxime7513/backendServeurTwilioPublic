@@ -34,7 +34,7 @@ app.post('/rappelsms', async (req, res) => {
   };
 
   let rappelMessage = nom + ", n'oublie pas ta course aujourd'hui de " + crenauHeureDebut + "h à "+ crenauHeureFin + "h, pour " + societe + ".",
-  url = `\n` + "voici la mission:" + `\n` + "www.woozoo.delivery/mission/" + urlMission
+  url = `\n` + "voici la mission:" + `\n` + "woozoo.delivery/missionRoseBaie/" + urlMission
   if(urlMission != ""){
     rappelMessage += url;
   }
