@@ -2,8 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-// const sendSms = require('./scheduled_sms');
-const sendSms = require('./scheduled_sms2');
+
+const sendSms = require('./send_sms');
+const sendScheduledSms = require('./scheduled_sms');
 const sendSmsGroupe = require('./groupe_sms');
 const cancelSms = require('./cancel_scheduled_sms');
 
@@ -22,26 +23,25 @@ app.get('/', (req,res) => res.send('express server run'));
 
 // Create rappelsms endpoint
 app.post('/rappelsms', async (req, res) => {
-  const { crenauDate, crenauHeureDebut,crenauHeureFin, phone, nom, societe, urlMission } = req.body;
+  const { crenauDate, crenauHeureDebut,crenauHeureFin, phone, nom, societe, urlMission, typeMission } = req.body;
   const rappelCrenau = {
     crenauDate,
-    crenauHeureDebut,
-    crenauHeureFin,
-    phone,
-    nom,
-    societe,
-    urlMission
+    phone
   };
 
-  let rappelMessage = nom + ", n'oublie pas ta course aujourd'hui de " + crenauHeureDebut + "h à "+ crenauHeureFin + "h, pour " + societe + ".",
-  url = `\n` + "voici la mission:" + `\n` + "woozoo.delivery/missionRoseBaie/" + urlMission
-  if(urlMission != ""){
-    rappelMessage += url;
+  let rappelMessage;
+  if(typeMission == 'astreinte'){
+    rappelMessage = nom + ", n'oublie que tu est d'astreinte aujourd'hui de " + crenauHeureDebut + " à "+ crenauHeureFin + ", pour " + societe + ". Tu recevera un message si " + societe + " à besoin de toi.";
+  }else{
+    rappelMessage = nom + ", n'oublie pas ta course aujourd'hui de " + crenauHeureDebut + " à "+ crenauHeureFin + ", pour " + societe + ".",
+    url = `\n` + "voici la mission:" + `\n` + "woozoo.delivery/missionRoseBaie/" + urlMission
+    if(urlMission != ""){
+      rappelMessage += url;
+    }
   }
 
-  // sendSms(rappelCrenau.crenauDate, rappelCrenau.phone, rappelMessage);
-  const messageId = await sendSms(rappelCrenau.crenauDate, rappelCrenau.phone, rappelMessage);
-
+  const messageId = await sendScheduledSms(rappelCrenau.crenauDate, rappelCrenau.phone, rappelMessage);
+  console.log('sms rappel => ' + typeMission)
   res.status(201).send({
     message: 'Envoie du sms programmé confirmée',
     smsId: messageId,
@@ -49,11 +49,16 @@ app.post('/rappelsms', async (req, res) => {
   })
 });
 
-// Create notificationCrenau endpoint
+// notification d'un creneau à tous les livreurs
 app.post('/notificationCrenau', (req, res) => {
-  const { role, date, phoneTab } = req.body;
-  const message = role + ' viens de rajouter des créneaux pour le ' + date + '. Connectez-vous pour les réserver'
-  
+  const { typeMission, role, date, phoneTab } = req.body;
+  let message;
+  if(typeMission == 'astreinte'){
+    message = role + ' viens d\'ajouté une astreinte pour le ' + date + '. Connectez-vous pour la réserver'
+  }else{
+    message = role + ' viens d\'ajouté des créneaux de livraison pour le ' + date + '. Connectez-vous pour les réserver'
+  }
+
   sendSmsGroupe(phoneTab, message);
 
   res.status(201).send({
@@ -62,6 +67,36 @@ app.post('/notificationCrenau', (req, res) => {
   })
 });
 
+// notifications qu'un creneau c'est libéré à tous les livreurs
+app.post('/notificationCrenau2', (req, res) => {
+  const { typeMission, role, date, phoneTab, heureDebut, heureFin } = req.body;
+  let message;
+  if(typeMission == 'astreinte'){
+    message = 'Une astreinte pour ' + role + ' le ' + date + ' de ' + heureDebut + ' à ' + heureFin + ', viens de se libérer.'
+  }else{
+    message = 'Un créneau de livraison pour ' + role + ' le ' + date + ' de ' + heureDebut + ' à ' + heureFin + ', viens de se libérer.'
+  }
+
+  sendSmsGroupe(phoneTab, message);
+
+  res.status(201).send({
+    message: 'Envoie du sms de groupe confirmée',
+    data: (phoneTab)
+  })
+});
+
+// envoyer sms apelle du livreur d'astreinte
+app.post('/callAstreinte', (req, res) => {
+  const { nom, phone, role } = req.body;
+  const message = nom + ', ' + role + ' à besoin de toi maintenant. Tu à 15 minutes pour te présenter au restaurant.'
+
+  sendSms(phone, message);
+
+  res.status(201).send({
+    message: 'Envoie du sms confirmée',
+    // data: (phoneTab)
+  })
+});
 
 // annuler sms programmé
 app.post('/cancelRappelSms', (req, res) => {
