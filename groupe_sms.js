@@ -16,7 +16,7 @@ const sendSmsGroupe = (numbers, message) => {
         })
         .then(notification => {
             //   console.log(notification);
-              console.log('sent!')
+              console.log('sent message notification créneau groupé!')
         })
         .catch(err => {
               console.error(err);
