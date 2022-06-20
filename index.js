@@ -56,7 +56,7 @@ app.post('/notificationCrenau', (req, res) => {
   if(typeMission == 'astreinte'){
     message = role + ' viens d\'ajouté une astreinte pour le ' + date + '. Connectez-vous pour la réserver'
   }else{
-    message = role + ' viens d\'ajouté des créneaux de livraison pour le ' + date + '. Connectez-vous pour les réserver'
+    message = role + ' viens d\'ajouté un créneau de livraison pour le ' + date + '. Connectez-vous pour le réserver'
   }
 
   sendSmsGroupe(phoneTab, message);
