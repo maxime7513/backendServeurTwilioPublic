@@ -98,6 +98,19 @@ app.post('/callAstreinte', (req, res) => {
   })
 });
 
+// envoyer sms apelle du livreur d'astreinte
+app.post('/annulationCreneau', (req, res) => {
+  const { typeMission, phone, role, date, heureDebut, heureFin } = req.body;
+  const message = role + ' à annuler son ' + typeMission + 'que tu avais réservé le ' + date + 'de ' + heureDebut + ' à ' + heureFin + '.'
+
+  sendSms(phone, message);
+
+  res.status(201).send({
+    message: 'Envoie du sms confirmée',
+    // data: (phoneTab)
+  })
+});
+
 // annuler sms programmé
 app.post('/cancelRappelSms', (req, res) => {
   const { messageId } = req.body;
