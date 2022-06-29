@@ -123,13 +123,12 @@ app.post('/cancelRappelSms', (req, res) => {
 
 // send email
 app.post('/sendMail' , (req, res) => {
-  const {to, subject, text} = req.body;
+  const {to, subject, html} = req.body;
   const mailData = {
     from: 'maxbln7513@gmail.com',
     to: to,
     subject: subject,
-    text: text,
-    html: '<b>NodeJS Email Tutorial</b>',
+    html: html,
   };
 
   sendMail(mailData);
