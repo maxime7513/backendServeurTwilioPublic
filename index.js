@@ -2,11 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-
 const sendSms = require('./send_sms');
 const sendScheduledSms = require('./scheduled_sms');
 const sendSmsGroupe = require('./groupe_sms');
 const cancelSms = require('./cancel_scheduled_sms');
+const sendMail = require('./send_mail');
 
 // Express settings
 const app = express();
@@ -18,6 +18,10 @@ app.use(cors());
 
 // Define PORT
 const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
 
 app.get('/', (req,res) => res.send('express server run'));
 
@@ -117,8 +121,18 @@ app.post('/cancelRappelSms', (req, res) => {
   cancelSms(messageId);
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
- 
+// send email
+app.post('/sendMail' , (req, res) => {
+  const {to, subject, text} = req.body;
+  const mailData = {
+    from: 'maxbln7513@gmail.com',
+    to: to,
+    subject: subject,
+    text: text,
+    html: '<b>NodeJS Email Tutorial</b>',
+  };
+
+  sendMail(mailData);
+})
+
 // module.exports = app;
