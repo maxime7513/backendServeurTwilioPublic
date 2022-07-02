@@ -124,11 +124,17 @@ app.post('/cancelRappelSms', (req, res) => {
 // send email
 app.post('/sendMail' , (req, res) => {
   const {to, subject, html} = req.body;
+  const logo = `<b><img src="cid:logoWoozoo" style="width: 90%; max-width: 300px; display: block; margin: 50px auto auto;"/></b>`;
   const mailData = {
     from: 'maxbln7513@gmail.com',
     to: to,
     subject: subject,
-    html: html,
+    html: html + logo,
+    attachments: [{
+      filename: 'logo-woozoo.png',
+      path: './assets/logo-woozoo.png',
+      cid: 'logoWoozoo'
+     }]
   };
 
   sendMail(mailData);
