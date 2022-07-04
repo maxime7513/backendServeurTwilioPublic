@@ -6,7 +6,6 @@ const twilio = require('twilio')(accountSid, authToken);
 const service = twilio.notify.services(process.env.TWILIO_NOTIFY_SERVICE_SID);
 
 const sendSmsGroupe = (numbers, message) => {
-      console.log(numbers)
       const bindings = numbers.map(number => {
         return JSON.stringify({ binding_type: 'sms', address: number });
       });

@@ -45,7 +45,7 @@ app.post('/rappelsms', async (req, res) => {
   }
 
   const messageId = await sendScheduledSms(rappelCrenau.crenauDate, rappelCrenau.phone, rappelMessage);
-  console.log('sms rappel => ' + typeMission)
+  console.log('sms rappel => ' + typeMission + 'phone => ' + rappelCrenau.phone)
   res.status(201).send({
     message: 'Envoie du sms programmé confirmée',
     smsId: messageId,
