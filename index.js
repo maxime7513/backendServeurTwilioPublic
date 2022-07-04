@@ -58,9 +58,9 @@ app.post('/notificationCrenau', (req, res) => {
   const { typeMission, role, date, phoneTab } = req.body;
   let message;
   if(typeMission == 'astreinte'){
-    message = role + ' viens d\'ajouté une astreinte pour le ' + date + '. Connectez-vous pour la réserver' + `\n` + 'www.woozoo.delivery'
+    message = role + ' viens d\'ajouté une astreinte pour le ' + date + '. Connectez-vous pour la réserver' + `\n` + 'https://www.woozoo.delivery'
   }else{
-    message = role + ' viens d\'ajouté un créneau de livraison pour le ' + date + '. Connectez-vous pour le réserver' + `\n` + 'www.woozoo.delivery'
+    message = role + ' viens d\'ajouté un créneau de livraison pour le ' + date + '. Connectez-vous pour le réserver' + `\n` + 'https://www.woozoo.delivery'
   }
 
   sendSmsGroupe(phoneTab, message);
