@@ -20,6 +20,7 @@ const sendMail = (mailData) => {
         if(error){
             return console.log('error')
         }
+        console.log('email send')
         res.status(200).send({ message: "Mail send", message_id: info.messageId});
     })
 }
