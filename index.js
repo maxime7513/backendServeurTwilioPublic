@@ -1,4 +1,5 @@
 const express = require('express');
+const fetch = require('isomorphic-fetch');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -140,4 +141,45 @@ app.post('/sendMail' , (req, res) => {
   sendMail(mailData);
 })
 
-// module.exports = app;
+app.post('/sendMailRecaptcha' , (req, res) => {
+  const {to, subject, html, tokenRecaptcha} = req.body;
+  const logo = `<b><img src="cid:logoWoozoo" style="width: 90%; max-width: 300px; display: block; margin: 50px auto auto;"/></b>`;
+  const mailData = {
+    from: 'maxbln7513@gmail.com',
+    to: to,
+    subject: subject,
+    html: html + logo,
+    attachments: [{
+      filename: 'logo-woozoo.png',
+      path: './assets/logo-woozoo.png',
+      cid: 'logoWoozoo'
+     }]
+  };
+
+  // Hitting POST request to the URL, Google will
+  // respond with success or error scenario.
+  const secret_key = process.env.RECAPTCHA_SECRET_KEY;
+  const url =
+  `https://www.google.com/recaptcha/api/siteverify?secret=${secret_key}&response=${tokenRecaptcha}`;
+ 
+  // Making POST request to verify captcha
+  fetch(url, {
+    method: "post",
+  })
+    .then((response) => response.json())
+    .then((google_response) => {
+      if (google_response.success == true) {
+        // if captcha is verified
+        sendMail(mailData);
+        return res.send({ response: "Successful" });
+      } else {
+        // if captcha is not verified
+        return res.send({ response: "Failed" });
+      }
+    })
+    .catch((error) => {
+      // Some error while verify captcha
+      return res.json({ error });
+    });
+
+})
