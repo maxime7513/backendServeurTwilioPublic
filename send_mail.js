@@ -1,15 +1,15 @@
 require('dotenv').config();
-const userGmail = process.env.USER_GMAIL;
-const passGmail = process.env.PASS_GMAIL;
+const userMail = process.env.USER_MAIL;
+const passMail = process.env.PASS_MAIL;
 
 const nodeMailer = require('nodemailer');
 
 const transporter = nodeMailer.createTransport({
     port: 465, // true for 465, false for other ports
-    host: "smtp.gmail.com",
+    host: "ssl0.ovh.net",
        auth: {
-            user: userGmail,
-            pass: passGmail,
+            user: userMail,
+            pass: passMail,
          },
     secure: true,
 });

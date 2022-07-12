@@ -127,7 +127,7 @@ app.post('/sendMail' , (req, res) => {
   const {to, subject, html} = req.body;
   const logo = `<b><img src="cid:logoWoozoo" style="width: 90%; max-width: 300px; display: block; margin: 50px auto auto;"/></b>`;
   const mailData = {
-    from: 'maxbln7513@gmail.com',
+    from: 'contact@woozoo.io',
     to: to,
     subject: subject,
     html: html + logo,
@@ -142,10 +142,10 @@ app.post('/sendMail' , (req, res) => {
 })
 
 app.post('/sendMailRecaptcha' , (req, res) => {
-  const {to, subject, html, tokenRecaptcha} = req.body;
+  const {from, to, subject, html, tokenRecaptcha} = req.body;
   const logo = `<b><img src="cid:logoWoozoo" style="width: 90%; max-width: 300px; display: block; margin: 50px auto auto;"/></b>`;
   const mailData = {
-    from: 'maxbln7513@gmail.com',
+    from: from,
     to: to,
     subject: subject,
     html: html + logo,
