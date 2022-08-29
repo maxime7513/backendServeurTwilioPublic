@@ -8,6 +8,9 @@ const sendScheduledSms = require('./scheduled_sms');
 const sendSmsGroupe = require('./groupe_sms');
 const cancelSms = require('./cancel_scheduled_sms');
 const sendMail = require('./send_mail');
+const imagesUpload = require('./upload_img');
+
+// const multer = require('multer');
 
 // Express settings
 const app = express();
@@ -15,6 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+
 app.use(cors());
 
 // Define PORT
@@ -26,7 +30,7 @@ app.listen(port, () => {
 
 app.get('/', (req,res) => res.send('express server run'));
 
-// Create rappelsms endpoint
+// rappelsms endpoint
 app.post('/rappelsms', async (req, res) => {
   const { crenauDate, crenauHeureDebut,crenauHeureFin, phone, nom, societe, urlMission, typeMission } = req.body;
   const rappelCrenau = {
@@ -127,7 +131,7 @@ app.post('/sendMail' , (req, res) => {
   const {to, subject, html} = req.body;
   const logo = `<b><img src="cid:logoWoozoo" style="width: 90%; max-width: 300px; display: block; margin: 50px auto auto;"/></b>`;
   const mailData = {
-    from: 'contact@woozoo.io',
+    from: 'Woozoo',
     to: to,
     subject: subject,
     html: html + logo,
@@ -182,4 +186,49 @@ app.post('/sendMailRecaptcha' , (req, res) => {
       return res.json({ error });
     });
 
+})
+
+// mail with multiple attachments endpoint
+  // app.post('/uploadImage', imageUpload.single('image'), (req, res) => {
+  //   console.log(req.file.path)
+  //   res.send(req.file)
+  // }, (error, req, res, next) => {
+  //   res.status(400).send({ error: error.message })
+  // })
+
+app.post('/sendMailSubscription', (req, res) => {
+  imagesUpload(req,res,function(err){
+    if(err){
+      console.log(err)
+      return res.end("Something went wrong!");
+    }else{
+      const path = require('path'); // pour rennomer l'image
+      const mailData = {
+        from: 'woozoo',
+        to: 'blnmax@yahoo.com',
+        subject: "Demande d'inscription livreur",
+        html: req.body.html,
+        attachments: [
+          {
+          // filename: req.file.filename, // "file" => envoie d'un seul fichier
+          filename: "CI-Recto_" + req.body.nom + "_" + req.body.prenom + path.extname(req.files[0].filename),
+          path: req.files[0].path,
+         },
+         {
+          filename: "CI-Verso_" + req.body.nom + "_" + req.body.prenom + path.extname(req.files[1].filename),
+          path: req.files[1].path,
+         },
+         {
+          filename: "KBIS_" + req.body.nom + "_" + req.body.prenom + path.extname(req.files[2].filename),
+          path: req.files[2].path,
+         },
+         {
+          filename: "RIB_" + req.body.nom + "_" + req.body.prenom + path.extname(req.files[3].filename),
+          path: req.files[3].path,
+         },
+        ]
+      };
+      sendMail(mailData);
+    }
+  })
 })
