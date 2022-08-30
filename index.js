@@ -28,7 +28,7 @@ app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
-app.get('/', (req,res) => res.send('express server run'));
+app.get('/', (req,res) => res.send('express server run!!!'));
 
 // rappelsms endpoint
 app.post('/rappelsms', async (req, res) => {
