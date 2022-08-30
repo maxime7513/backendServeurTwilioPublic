@@ -19,7 +19,9 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://www.woozoo.io'
+}));
 
 // Define PORT
 const port = process.env.PORT || 3000;
