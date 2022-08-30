@@ -205,7 +205,7 @@ app.post('/sendMailSubscription', (req, res) => {
       const path = require('path'); // pour rennomer l'image
       const mailData = {
         from: 'contact@woozoo.io',
-        to: 'blnmax@yahoo.com',
+        to: 'contact@woozoo.io',
         subject: "Demande d'inscription livreur",
         html: req.body.html,
         attachments: [
