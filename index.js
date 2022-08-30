@@ -131,7 +131,7 @@ app.post('/sendMail' , (req, res) => {
   const {to, subject, html} = req.body;
   const logo = `<b><img src="cid:logoWoozoo" style="width: 90%; max-width: 300px; display: block; margin: 50px auto auto;"/></b>`;
   const mailData = {
-    from: 'Woozoo',
+    from: 'contact@woozoo.io',
     to: to,
     subject: subject,
     html: html + logo,
