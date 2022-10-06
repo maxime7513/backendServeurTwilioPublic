@@ -185,7 +185,48 @@ app.post('/sendMailRecaptcha' , (req, res) => {
       // Some error while verify captcha
       return res.json({ error });
     });
+})
 
+app.post('/sendMailRecaptcha2' , (req, res) => {
+  const {from, to, subject, html, tokenRecaptcha} = req.body;
+  const logo = `<b><img src="cid:logoWoozoo" style="width: 90%; max-width: 300px; display: block; margin: 50px auto auto;"/></b>`;
+  const mailData = {
+    from: from,
+    to: to,
+    subject: subject,
+    html: html + logo,
+    attachments: [{
+      filename: 'logo-woozoo.png',
+      path: './assets/logo-woozoo.png',
+      cid: 'logoWoozoo'
+     }]
+  };
+
+  // Hitting POST request to the URL, Google will
+  // respond with success or error scenario.
+  const secret_key = process.env.RECAPTCHA_SECRET_KEY2;
+  const url =
+  `https://www.google.com/recaptcha/api/siteverify?secret=${secret_key}&response=${tokenRecaptcha}`;
+ 
+  // Making POST request to verify captcha
+  fetch(url, {
+    method: "post",
+  })
+    .then((response) => response.json())
+    .then((google_response) => {
+      if (google_response.success == true) {
+        // if captcha is verified
+        sendMail(mailData);
+        return res.send({ response: "Successful" });
+      } else {
+        // if captcha is not verified
+        return res.send({ response: "Failed" });
+      }
+    })
+    .catch((error) => {
+      // Some error while verify captcha
+      return res.json({ error });
+    });
 })
 
 // mail with multiple attachments endpoint
@@ -207,6 +248,43 @@ app.post('/sendMailSubscription', (req, res) => {
         from: 'contact@woozoo.io',
         to: 'contact@woozoo.io',
         subject: "Demande d'inscription livreur",
+        html: req.body.html,
+        attachments: [
+          {
+          // filename: req.file.filename, // "file" => envoie d'un seul fichier
+          filename: "CI-Recto_" + req.body.nom + "_" + req.body.prenom + path.extname(req.files[0].filename),
+          path: req.files[0].path,
+         },
+         {
+          filename: "CI-Verso_" + req.body.nom + "_" + req.body.prenom + path.extname(req.files[1].filename),
+          path: req.files[1].path,
+         },
+         {
+          filename: "KBIS_" + req.body.nom + "_" + req.body.prenom + path.extname(req.files[2].filename),
+          path: req.files[2].path,
+         },
+         {
+          filename: "RIB_" + req.body.nom + "_" + req.body.prenom + path.extname(req.files[3].filename),
+          path: req.files[3].path,
+         },
+        ]
+      };
+      sendMail(mailData);
+    }
+  })
+})
+
+app.post('/sendMailSubscription2', (req, res) => {
+  imagesUpload(req,res,function(err){
+    if(err){
+      console.log(err)
+      return res.end("Something went wrong!");
+    }else{
+      const path = require('path'); // pour rennomer l'image
+      const mailData = {
+        from: 'contact@woozoo.io',
+        to: 'contact@woozoo.io',
+        subject: req.body.subject,
         html: req.body.html,
         attachments: [
           {
